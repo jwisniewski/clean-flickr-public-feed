@@ -1,0 +1,48 @@
+# ignore eclipse project files
+.settings
+.classpath
+.project
+.cproject
+.externalToolBuilders
+
+# ignore build and derivative files
+gen
+obj
+bin
+target
+build
+Debug
+.o
+
+# ignore OS specific files
+__MACOSX
+.DS_Store
+._*
+Thumbs.db
+
+# ignore idea project files
+.idea/
+*.iml
+
+# ignore android binaries and build files
+gen/
+*.apk
+*.ap_
+*.dex
+
+# ignore local configuration files
+local.properties
+
+# ignore iOS binaries and build files
+.app
+.ipa
+.xcarchive
+
+# ignore gradle cache files
+.gradle/
+
+# ignore git merge files
+*.orig
+
+# ignore log files
+*.log

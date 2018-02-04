@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion "27.0.1"
+
+    defaultConfig {
+        applicationId "com.jw.flickrfeed"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    // Any local libraries
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Android Support Libraries
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:support-v4:27.0.2'
+
+    // Lombook (https://projectlombok.org)
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
+
+    // Jackson (https://github.com/FasterXML)
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+
+    // Retrofit (http://square.github.io/retrofit/)
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+
+    // Picasso (http://square.github.io/picasso/)
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // Butter Knife (http://jakewharton.github.io/butterknife/)
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // JUnit (http://junit.org/junit4/)
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+
+    // Mockito (http://site.mockito.org)
+    testCompile 'org.mockito:mockito-core:2.2.10'
+}
