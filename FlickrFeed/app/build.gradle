@@ -39,18 +39,26 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.20'
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
+    // RXJava (https://github.com/ReactiveX/RxJava)
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
     // Jackson (https://github.com/FasterXML)
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+
+    // OkHttp (http://square.github.io/okhttp/)
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 
     // Retrofit (http://square.github.io/retrofit/)
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
     // Picasso (http://square.github.io/picasso/)
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     // Butter Knife (http://jakewharton.github.io/butterknife/)
-    compile 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // JUnit (http://junit.org/junit4/)
@@ -58,5 +66,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
 
     // Mockito (http://site.mockito.org)
-    testCompile 'org.mockito:mockito-core:2.2.10'
+    testImplementation 'org.mockito:mockito-core:2.2.10'
+
+    // NanoHTTPD (https://github.com/NanoHttpd/nanohttpd)
+    testImplementation 'org.nanohttpd:nanohttpd:2.3.1'
 }
