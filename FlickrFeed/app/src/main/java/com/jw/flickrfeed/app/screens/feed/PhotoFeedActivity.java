@@ -1,18 +1,21 @@
-package com.jw.flickrfeed;
+package com.jw.flickrfeed.app.screens.feed;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import com.jw.flickrfeed.R;
 
 /**
+ * TODO finish me
+ * <p>
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FeedActivity extends AppCompatActivity {
+public class PhotoFeedActivity extends AppCompatActivity {
 
     /**
      * Whether or not the system UI should be auto-hidden after
