@@ -22,23 +22,39 @@
 
 
 # Retrofit library rules
-
-# Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
-# Platform used when running on Java 8 VMs. Will not be used at runtime.
 -dontwarn retrofit2.Platform$Java8
-# Retain generic type information for use by reflection by converters and adapters.
 -keepattributes Signature
-# Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
 
 # Okio library rules (Okio is a dependency of the Retrofit library)
-
 -dontwarn okio.**
 
 
 # Retrolanbda
-
 -dontwarn java.lang.invoke.*
 -dontwarn **$$Lambda$*
+
+
+# Jackson
+-keep @com.fasterxml.jackson.annotation.JsonIgnoreProperties class * { *; }
+-keep class com.fasterxml.** { *; }
+-keep class org.codehaus.** { *; }
+-keepnames class com.fasterxml.jackson.** { *; }
+-keepclassmembers public final enum com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility {
+    public static final com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility *;
+}
+-dontwarn com.fasterxml.jackson.databind.**
+
+
+# Butter Knife
+-dontwarn butterknife.internal.**
+-keep class butterknife.** {*;}
+-keep class **$$ViewBinder {*;}
+-keepclasseswithmembernames class * {
+    @butterknife.** <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.** <methods>;
+}
