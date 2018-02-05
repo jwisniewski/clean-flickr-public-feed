@@ -9,7 +9,7 @@ import com.jw.flickrfeed.app.screens.feed.PhotoFeedFragment;
 import com.jw.flickrfeed.presentation.Navigator;
 
 /**
- * TODO finish me
+ * Main activity, an entry point of the app, inviting a user with a fresh list of photos downloaded from Flickr.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */

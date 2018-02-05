@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO implement me
+ * The feed of latest photos provided by the {@link PhotoRepository}, filtered by the {@link FilterRepository}.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
@@ -41,14 +41,10 @@ public class PhotoFeed {
     public PhotoFeed(@NonNull PhotoRepository photoRepository, @NonNull FilterRepository filterRepository) {
         this.photoRepository = photoRepository;
         this.filterRepository = filterRepository;
-
-        // TODO finish me
     }
 
     public void destroy() {
         photosSubject.onComplete();
-
-        // TODO finish me
     }
 
     @NonNull
@@ -63,6 +59,6 @@ public class PhotoFeed {
     }
 
     public void setFilter(@Nullable Filter filter) {
-        throw new Error("Not implemented");
+        throw new Error("Not implemented"); // TODO implement me
     }
 }

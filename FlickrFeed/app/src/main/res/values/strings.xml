@@ -4,4 +4,5 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="connection_issue_try_later">Oops! Check connection or try later!</string>
+    <string name="photo_description">A photo</string>
 </resources>
