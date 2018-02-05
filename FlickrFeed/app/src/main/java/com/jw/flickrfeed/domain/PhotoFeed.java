@@ -3,6 +3,7 @@ package com.jw.flickrfeed.domain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import io.reactivex.Single;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -21,7 +22,7 @@ public class PhotoFeed {
     public interface PhotoRepository {
 
         @NonNull
-        Single<List<Photo>> pullLatestPhotos();
+        Single<List<Photo>> pullLatestPhotos(@NonNull Collection<String> tags);
     }
 
     public interface FilterRepository {

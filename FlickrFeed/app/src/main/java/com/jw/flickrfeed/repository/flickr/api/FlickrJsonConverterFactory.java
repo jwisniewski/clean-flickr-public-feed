@@ -1,4 +1,4 @@
-package com.jw.flickrfeed.repository.flickr.rest;
+package com.jw.flickrfeed.repository.flickr.api;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

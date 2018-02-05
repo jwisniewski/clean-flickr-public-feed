@@ -1,4 +1,4 @@
-package com.jw.flickrfeed.repository.flickr.rest;
+package com.jw.flickrfeed.repository.flickr.api;
 
 import java.io.IOException;
 import org.junit.After;
@@ -39,7 +39,7 @@ public class FlickrApiTest {
         flickrServer.setPublicPhotosResponse(OK, "application/json; charset=utf-8",
                 readFile("/flickr/api/services/feeds/photos_public_with_one_valid_item.json", "utf-8"));
 
-        PublicPhotosResponse response = sut.pullPublicPhotosFeed().blockingGet();
+        FlickrPublicPhotos response = sut.pullPublicPhotos(null).blockingGet();
 
         assertEquals(1, response.items().size());
     }

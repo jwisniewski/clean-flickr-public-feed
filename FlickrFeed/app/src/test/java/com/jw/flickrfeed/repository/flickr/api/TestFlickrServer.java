@@ -1,4 +1,4 @@
-package com.jw.flickrfeed.repository.flickr.rest;
+package com.jw.flickrfeed.repository.flickr.api;
 
 import android.support.annotation.NonNull;
 import fi.iki.elonen.NanoHTTPD;

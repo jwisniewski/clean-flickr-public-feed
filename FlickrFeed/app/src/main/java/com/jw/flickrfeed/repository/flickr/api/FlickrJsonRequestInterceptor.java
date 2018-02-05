@@ -1,4 +1,4 @@
-package com.jw.flickrfeed.repository.flickr.rest;
+package com.jw.flickrfeed.repository.flickr.api;
 
 import java.io.IOException;
 import okhttp3.HttpUrl;
