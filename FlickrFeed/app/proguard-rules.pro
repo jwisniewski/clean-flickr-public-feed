@@ -32,12 +32,12 @@
 -dontwarn okio.**
 
 
-# Retrolanbda
+# Retrolanbda library rules
 -dontwarn java.lang.invoke.*
 -dontwarn **$$Lambda$*
 
 
-# Jackson
+# Jackson library rules
 -keep @com.fasterxml.jackson.annotation.JsonIgnoreProperties class * { *; }
 -keep class com.fasterxml.** { *; }
 -keep class org.codehaus.** { *; }
@@ -48,7 +48,7 @@
 -dontwarn com.fasterxml.jackson.databind.**
 
 
-# Butter Knife
+# Butter Knife library rules
 -dontwarn butterknife.internal.**
 -keep class butterknife.** {*;}
 -keep class **$$ViewBinder {*;}

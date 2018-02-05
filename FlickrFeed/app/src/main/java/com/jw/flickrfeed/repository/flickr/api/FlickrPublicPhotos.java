@@ -1,15 +1,16 @@
-package com.jw.flickrfeed.repository.flickr;
+package com.jw.flickrfeed.repository.flickr.api;
 
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Date;
 import java.util.List;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
 /**
- * A representation of a response of the Flickr Public Feed: https://www.flickr.com/services/feeds/docs/photos_public.
+ * A response of the Flickr Public Feed (https://www.flickr.com/services/feeds/docs/photos_public).
  * <p>
  * Implementation highlights:
  * <ul>
@@ -25,19 +26,23 @@ import lombok.experimental.Accessors;
  */
 @Keep
 @Value
-@Accessors(chain = true)
-class PublicPhotoFeed {
+@Accessors(fluent = true)
+public class FlickrPublicPhotos {
 
     @Value
-    static class Item {
+    @Accessors(fluent = true)
+    public static class Item {
+
+        private static final String PUBLISHED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
         @Value
-        static class Media {
+        @Accessors(fluent = true)
+        public static class Media {
 
             @NonNull
             String m;
 
-            Media(@NonNull @JsonProperty(value = "m", required = true) String m) {
+            public Media(@NonNull @JsonProperty(value = "m", required = true) String m) {
                 this.m = m;
             }
         }
@@ -52,13 +57,10 @@ class PublicPhotoFeed {
         Media media;
 
         @NonNull
-        String dateTaken;
-
-        @NonNull
         String description;
 
         @NonNull
-        String published;
+        Date datePublished;
 
         @NonNull
         String author;
@@ -69,22 +71,21 @@ class PublicPhotoFeed {
         @NonNull
         String tags;
 
-        Item(
+        public Item(
                 @NonNull @JsonProperty(value = "title", required = true) String title,
                 @NonNull @JsonProperty(value = "link", required = true) String link,
                 @NonNull @JsonProperty(value = "media", required = true) Media media,
-                @NonNull @JsonProperty(value = "date_taken", required = true) String dateTaken,
                 @NonNull @JsonProperty(value = "description", required = true) String description,
-                @NonNull @JsonProperty(value = "published", required = true) String published,
+                @NonNull @JsonProperty(value = "published", required = true) @JsonFormat(
+                        shape = JsonFormat.Shape.STRING, pattern = PUBLISHED_DATE_PATTERN) Date datePublished,
                 @NonNull @JsonProperty(value = "author", required = true) String author,
                 @NonNull @JsonProperty(value = "author_id", required = true) String authorId,
                 @NonNull @JsonProperty(value = "tags", required = true) String tags) {
             this.title = title;
             this.link = link;
             this.media = media;
-            this.dateTaken = dateTaken;
             this.description = description;
-            this.published = published;
+            this.datePublished = datePublished;
             this.author = author;
             this.authorId = authorId;
             this.tags = tags;
@@ -92,35 +93,10 @@ class PublicPhotoFeed {
     }
 
     @NonNull
-    String title;
-
-    @NonNull
-    String link;
-
-    @NonNull
-    String description;
-
-    @Nullable
-    String modified;
-
-    @Nullable
-    String generator;
-
-    @NonNull
     List<Item> items;
 
-    public PublicPhotoFeed(
-            @NonNull @JsonProperty(value = "title", required = true) String title,
-            @NonNull @JsonProperty(value = "link", required = true) String link,
-            @NonNull @JsonProperty(value = "description", required = true) String description,
-            @Nullable @JsonProperty(value = "modified") String modified,
-            @Nullable @JsonProperty(value = "generator") String generator,
+    public FlickrPublicPhotos(
             @NonNull @JsonProperty(value = "items", required = true) List<Item> items) {
-        this.title = title;
-        this.link = link;
-        this.description = description;
-        this.modified = modified;
-        this.generator = generator;
         this.items = items;
     }
 }

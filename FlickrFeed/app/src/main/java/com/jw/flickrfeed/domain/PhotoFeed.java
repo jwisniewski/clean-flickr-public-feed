@@ -2,9 +2,10 @@ package com.jw.flickrfeed.domain;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import io.reactivex.Single;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Future;
 
 /**
  * TODO implement me
@@ -21,13 +22,13 @@ public class PhotoFeed {
     public interface PhotoRepository {
 
         @NonNull
-        Future<Filter> pullLatestPhotos();
+        Single<List<Photo>> pullLatestPhotos(@NonNull Collection<String> tags);
     }
 
     public interface FilterRepository {
 
         @NonNull
-        Future<Filter> pullLatestFilter();
+        Single<Filter> pullLatestFilter();
     }
 
     private final CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<>();
