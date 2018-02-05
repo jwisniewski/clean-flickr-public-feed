@@ -23,7 +23,7 @@ public class FlickrApiTest {
 
     @Before
     public void setUp() throws IOException {
-        sut = FlickrApi.create(TestFlickrServer.URL, true);
+        sut = new FlickrApiFactory().verbose(true).create(TestFlickrServer.URL);
 
         flickrServer = new TestFlickrServer();
         flickrServer.start();
