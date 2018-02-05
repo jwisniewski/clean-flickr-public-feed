@@ -7,7 +7,7 @@ package com.jw.flickrfeed.presentation;
  */
 public class PhotoDetailsPresenter {
 
-    interface View {
+    public interface View {
 
     }
 }

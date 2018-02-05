@@ -52,9 +52,7 @@ public abstract class AppFragmentActivity extends AppCompatActivity
         int fragmentContainerId = getContentFragmentContainerId();
         if (fragmentContainerId != View.NO_ID) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
+            // In case we're being restored from a previous state, fragments will be here already, nothing more to do!
             if (savedInstanceState != null) {
                 return;
             }
@@ -180,7 +178,7 @@ public abstract class AppFragmentActivity extends AppCompatActivity
     }
 
     @Nullable
-    public abstract Fragment createStartupFragment(Intent intent);
+    public abstract Fragment createStartupFragment(@NonNull Intent intent);
 
     public boolean isScreenVisible(@NonNull String fragmentTag) {
         return getScreenIfVisible(fragmentTag) != null;

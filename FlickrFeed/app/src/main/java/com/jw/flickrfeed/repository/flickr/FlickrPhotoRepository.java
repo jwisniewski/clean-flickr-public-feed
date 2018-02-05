@@ -7,6 +7,7 @@ import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
 import com.jw.flickrfeed.repository.flickr.api.FlickrPublicPhotos;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     @Override
     public Single<List<Photo>> pullLatestPhotos(@NonNull Collection<String> tags) {
         return api.pullPublicPhotos(joinTags(tags))
+                  .observeOn(AndroidSchedulers.mainThread())
                   .map(FlickrPublicPhotos::items)
                   .flatMap(items -> Observable.fromIterable(items)
                                               .map(this::itemToPhoto)
