@@ -49,7 +49,7 @@ public class FlickrPhotoRepositoryTest extends AppTest {
         final FlickrPublicPhotos.Item givenItem = new FlickrPublicPhotos.Item(
                 "title",
                 "link",
-                new FlickrPublicPhotos.Item.Media("mediaUrl"),
+                new FlickrPublicPhotos.Item.Media("media"),
                 "description",
                 new Date(0),
                 "author",
@@ -59,7 +59,8 @@ public class FlickrPhotoRepositoryTest extends AppTest {
 
         final Photo expectedPhoto = Photo.builder().author("author")
                                          .publishedAt(new Date(0))
-                                         .url("mediaUrl")
+                                         .thumbnailUrl("media")
+                                         .detailsUrl("link")
                                          .build();
 
         Photo photo = sut.itemToPhoto(givenItem);

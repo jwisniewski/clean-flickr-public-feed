@@ -54,7 +54,8 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
         return Photo.builder()
                     .author(extractQuotedAuthorName(item.author()))
                     .publishedAt(item.datePublished())
-                    .url(item.media().m())
+                    .thumbnailUrl(item.media().m())
+                    .detailsUrl(item.link())
                     .build();
     }
 

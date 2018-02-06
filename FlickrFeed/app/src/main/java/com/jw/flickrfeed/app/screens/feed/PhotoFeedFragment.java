@@ -1,5 +1,6 @@
 package com.jw.flickrfeed.app.screens.feed;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.jw.base.ui.activities.AppFragment;
 import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.app.FlickrFeedApplication;
 import com.jw.flickrfeed.domain.Photo;
+import com.jw.flickrfeed.presentation.Navigator;
 import com.jw.flickrfeed.presentation.PhotoFeedPresenter;
 import java.util.List;
 
@@ -25,7 +27,8 @@ import java.util.List;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
-public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter.View {
+public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter.View,
+        PhotoFeedAdapter.PhotoIntegrationListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.photosSwipeRefreshLayout)
     SwipeRefreshLayout photosSwipeRefreshLayout;
@@ -38,6 +41,8 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
     Unbinder unbinder;
 
     PhotoFeedPresenter presenter;
+
+    Navigator navigator;
 
     @NonNull
     public static PhotoFeedFragment newInstance() {
@@ -58,7 +63,7 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
         final int spanCount = getResources().getInteger(R.integer.photo_feed_span_count);
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), spanCount);
         final GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(getContext(), layoutManager,
-                R.dimen.grid);
+                R.dimen.grid_0_5x);
 
         photosRecyclerView.setHasFixedSize(true);
         photosRecyclerView.setLayoutManager(layoutManager);
@@ -70,18 +75,10 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
             photosRecyclerView.invalidateItemDecorations();
         });
 
-        presenter = new PhotoFeedPresenter(this, FlickrFeedApplication.instance(getContext()).photoFeed());
+        presenter = new PhotoFeedPresenter(navigator, this, FlickrFeedApplication.instance(getContext()).photoFeed());
 
-        photosSwipeRefreshLayout.setOnRefreshListener(() -> presenter.refreshPhotos());
-
-        /* TODO decide on immersive mode
-        view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        */
+        photosAdapter.setPhotoIntegrationListener(this);
+        photosSwipeRefreshLayout.setOnRefreshListener(this);
 
         return view;
     }
@@ -98,6 +95,39 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Navigator) {
+            navigator = (Navigator) context;
+        } else {
+            throw new IllegalStateException("Fragment expects attaching activity");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        navigator = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.refreshPhotos();
+    }
+
+    @Override
+    public void onPhotoSelected(@NonNull Photo photo) {
+        presenter.selectPhoto(photo);
+    }
+
+    @Override
+    public void onPhotoDetailsRequested(@NonNull Photo photo) {
+        presenter.requestPhotoDetails(photo);
+    }
+
+    @Override
     public void showRefreshing(boolean refreshing) {
         photosSwipeRefreshLayout.setRefreshing(refreshing);
     }
@@ -109,6 +139,6 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
 
     @Override
     public void showTryLaterHint() {
-        Snackbar.make(photosRecyclerView, R.string.connection_issue_try_later, Snackbar.LENGTH_LONG);
+        Snackbar.make(photosRecyclerView, R.string.connection_issue_try_later, Snackbar.LENGTH_LONG).show();
     }
 }

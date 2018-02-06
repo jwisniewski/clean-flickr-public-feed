@@ -17,7 +17,10 @@ import lombok.experimental.Accessors;
 public class Photo {
 
     @NonNull
-    String url;
+    String thumbnailUrl;
+
+    @NonNull
+    String detailsUrl;
 
     @NonNull
     Date publishedAt;
