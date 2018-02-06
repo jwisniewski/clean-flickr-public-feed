@@ -2,6 +2,8 @@
 <manifest package="com.jw.flickrfeed"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".app.FlickrFeedApplication"
         android:allowBackup="true"
@@ -10,16 +12,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".app.screens.feed.PhotoFeedActivity"
+            android:name=".app.FlickrFeedActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme">
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <layout
+                android:defaultHeight="640dp"
+                android:defaultWidth="360dp"
+                android:gravity="center"
+                android:minHeight="300dp"
+                android:minWidth="300dp" />
+
         </activity>
     </application>
 

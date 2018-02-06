@@ -1,11 +1,10 @@
 package com.jw.flickrfeed.repository.flickr.api;
 
+import com.jw.flickrfeed.AppTest;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.jw.flickrfeed.utils.TestResources.readFile;
 import static fi.iki.elonen.NanoHTTPD.Response.Status.OK;
@@ -14,8 +13,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
-@RunWith(MockitoJUnitRunner.class)
-public class FlickrApiTest {
+public class FlickrApiTest extends AppTest {
 
     private FlickrApi sut;
 

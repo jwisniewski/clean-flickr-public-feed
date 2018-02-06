@@ -7,8 +7,11 @@ import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
 import com.jw.flickrfeed.repository.flickr.api.FlickrPublicPhotos;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides a list of latest {@link Photo}s from the Flickr Public Feed
@@ -18,7 +21,15 @@ import java.util.List;
  */
 public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
 
+    /**
+     * Separator of tags string provided as an input to {@link FlickrApi#pullPublicPhotos(String)}.
+     */
     private static final String TAG_SEPARATOR = ",";
+
+    /**
+     * Pattern matching a quoted not empty string. Decoded version: "(.+?)".
+     */
+    private static final Pattern AUTHOR_NAME_PATTERN = Pattern.compile("\"(.+?)\"");
 
     @NonNull
     private final FlickrApi api;
@@ -31,6 +42,7 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     @Override
     public Single<List<Photo>> pullLatestPhotos(@NonNull Collection<String> tags) {
         return api.pullPublicPhotos(joinTags(tags))
+                  .observeOn(AndroidSchedulers.mainThread())
                   .map(FlickrPublicPhotos::items)
                   .flatMap(items -> Observable.fromIterable(items)
                                               .map(this::itemToPhoto)
@@ -40,12 +52,13 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     @NonNull
     Photo itemToPhoto(@NonNull FlickrPublicPhotos.Item item) {
         return Photo.builder()
-                    .author(item.author())
+                    .author(extractQuotedAuthorName(item.author()))
                     .publishedAt(item.datePublished())
                     .url(item.media().m())
                     .build();
     }
 
+    @NonNull
     String joinTags(@NonNull Collection<String> tags) {
         StringBuilder sb = new StringBuilder();
         for (String tag : tags) {
@@ -55,5 +68,15 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
             sb.append(tag);
         }
         return sb.toString();
+    }
+
+    @NonNull
+    String extractQuotedAuthorName(@NonNull String flickrFeedAuthor) {
+        Matcher matcher = AUTHOR_NAME_PATTERN.matcher(flickrFeedAuthor);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return flickrFeedAuthor;
+        }
     }
 }

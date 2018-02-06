@@ -1,5 +1,6 @@
 package com.jw.flickrfeed.repository.flickr;
 
+import com.jw.flickrfeed.AppTest;
 import com.jw.flickrfeed.domain.Photo;
 import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
 import com.jw.flickrfeed.repository.flickr.api.FlickrPublicPhotos;
@@ -10,9 +11,7 @@ import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -23,8 +22,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
-@RunWith(MockitoJUnitRunner.class)
-public class FlickrPhotoRepositoryTest {
+public class FlickrPhotoRepositoryTest extends AppTest {
 
     @Mock
     private FlickrApi flickrApi;
@@ -40,7 +38,7 @@ public class FlickrPhotoRepositoryTest {
     }
 
     @Test
-    public void pullPhotosShouldQueryFlickrApi() {
+    public void pullPublicPhotosShouldQueryFlickrApi() {
         sut.pullLatestPhotos(Collections.emptyList());
 
         verify(flickrApi, times(1)).pullPublicPhotos(anyString());
@@ -70,11 +68,29 @@ public class FlickrPhotoRepositoryTest {
     }
 
     @Test
-    public void tagsShouldBeJoined() {
+    public void joinTagsShouldJoinListOfTags() {
         List<String> tags = Arrays.asList("tag1", "tag2", "tag3");
 
         String joinedTags = sut.joinTags(tags);
 
         assertEquals("tag1,tag2,tag3", joinedTags);
+    }
+
+    @Test
+    public void extractQuotedAuthorNameShouldExtractQuotedString() {
+        String flickrFeedAuthor = "nobody@flickr.com (\"Dyler.com - Classic Cars for Sale\")";
+
+        String authorName = sut.extractQuotedAuthorName(flickrFeedAuthor);
+
+        assertEquals("Dyler.com - Classic Cars for Sale", authorName);
+    }
+
+    @Test
+    public void extractQuotedAuthorNameShouldFallbackToInputString() {
+        String flickrFeedAuthor = "nobody@flickr.com (\"Dyler.com - Classic Cars for Sale";
+
+        String authorName = sut.extractQuotedAuthorName(flickrFeedAuthor);
+
+        assertEquals(flickrFeedAuthor, authorName);
     }
 }
