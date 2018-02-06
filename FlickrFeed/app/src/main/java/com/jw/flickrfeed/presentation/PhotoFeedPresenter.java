@@ -23,6 +23,9 @@ public class PhotoFeedPresenter {
     }
 
     @NonNull
+    private final Navigator navigator;
+
+    @NonNull
     private final View view;
 
     @NonNull
@@ -31,7 +34,8 @@ public class PhotoFeedPresenter {
     @NonNull
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    public PhotoFeedPresenter(@NonNull View view, @NonNull PhotoFeed photoFeed) {
+    public PhotoFeedPresenter(@NonNull Navigator navigator, @NonNull View view, @NonNull PhotoFeed photoFeed) {
+        this.navigator = navigator;
         this.view = view;
         this.photoFeed = photoFeed;
 
@@ -53,5 +57,13 @@ public class PhotoFeedPresenter {
             view.showRefreshing(false);
             view.showTryLaterHint();
         });
+    }
+
+    public void selectPhoto(@NonNull Photo photo) {
+        // TODO
+    }
+
+    public void requestPhotoDetails(@NonNull Photo photo) {
+        navigator.openWebPage(photo.detailsUrl());
     }
 }

@@ -3,6 +3,7 @@ package com.jw.flickrfeed.app.screens.feed;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,17 @@ import java.util.List;
  */
 public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.ViewHolder> {
 
+    public interface PhotoIntegrationListener {
+
+        void onPhotoSelected(@NonNull Photo photo);
+
+        void onPhotoDetailsRequested(@NonNull Photo photo);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.itemContent)
+        ViewGroup itemContent;
 
         @BindView(R.id.photoImageView)
         ImageView photoImageView;
@@ -47,11 +58,11 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
             ButterKnife.bind(this, view);
         }
 
-        public void bind(@NonNull Photo photo) {
+        public void bind(@NonNull Photo photo, @Nullable PhotoIntegrationListener listener) {
             photoTextView.setVisibility(View.INVISIBLE);
 
             Picasso.with(photoImageView.getContext())
-                   .load(photo.url())
+                   .load(photo.thumbnailUrl())
                    .fit()
                    .centerCrop()
                    .into(photoImageView, new Callback() {
@@ -74,11 +85,29 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
                            // in production ready app we should definitely handle this
                        }
                    });
+
+            itemContent.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onPhotoSelected(photo);
+                }
+            });
+
+            itemContent.setOnLongClickListener(view -> {
+                if (listener != null) {
+                    listener.onPhotoDetailsRequested(photo);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
         }
     }
 
     @NonNull
     private final List<Photo> photos = new ArrayList<>();
+
+    @Nullable
+    private PhotoIntegrationListener photoIntegrationListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -87,7 +116,7 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        viewHolder.bind(photos.get(i));
+        viewHolder.bind(photos.get(i), photoIntegrationListener);
     }
 
     public void updateItems(@NonNull List<Photo> newPhotos) {
@@ -102,5 +131,10 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
     @Override
     public int getItemCount() {
         return photos.size();
+    }
+
+    public void setPhotoIntegrationListener(@Nullable PhotoIntegrationListener photoIntegrationListener) {
+        this.photoIntegrationListener = photoIntegrationListener;
+        notifyDataSetChanged();
     }
 }

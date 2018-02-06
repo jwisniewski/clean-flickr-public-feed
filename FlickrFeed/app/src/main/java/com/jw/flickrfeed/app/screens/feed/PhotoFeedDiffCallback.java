@@ -37,7 +37,7 @@ public class PhotoFeedDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldPosition, int newPosition) {
-        return Objects.equals(oldPhotos.get(oldPosition).url(), newPhotos.get(newPosition).url());
+        return Objects.equals(oldPhotos.get(oldPosition).thumbnailUrl(), newPhotos.get(newPosition).thumbnailUrl());
     }
 
     @Override
