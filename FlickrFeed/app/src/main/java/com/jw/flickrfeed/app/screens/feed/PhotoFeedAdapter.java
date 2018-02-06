@@ -1,16 +1,21 @@
 package com.jw.flickrfeed.app.screens.feed;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.domain.Photo;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,9 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         @BindView(R.id.photoImageView)
         ImageView photoImageView;
 
+        @BindView(R.id.photoTextView)
+        TextView photoTextView;
+
         @NonNull
         public static ViewHolder create(@NonNull ViewGroup parent) {
             return new ViewHolder(LayoutInflater.from(parent.getContext())
@@ -40,27 +48,32 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         }
 
         public void bind(@NonNull Photo photo) {
-            Picasso.with(itemView.getContext())
+            photoTextView.setVisibility(View.INVISIBLE);
+
+            Picasso.with(photoImageView.getContext())
                    .load(photo.url())
                    .fit()
                    .centerCrop()
-                   .into(photoImageView);
+                   .into(photoImageView, new Callback() {
+                       @Override
+                       public void onSuccess() {
+                           Palette.from(((BitmapDrawable) photoImageView.getDrawable()).getBitmap())
+                                  .generate(palette -> {
+                                      Palette.Swatch swatch = palette.getMutedSwatch();
+                                      if (swatch != null) {
+                                          photoTextView.setVisibility(View.VISIBLE);
+                                          photoTextView.setBackgroundTintList(ColorStateList.valueOf(swatch.getRgb()));
+                                          photoTextView.setTextColor(swatch.getBodyTextColor());
+                                          photoTextView.setText(photo.author());
+                                      }
+                                  });
+                       }
 
-            /* TODO decide: An alternative solution, enforcing we won't scale up loaded images.
-            itemView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-                    Picasso.with(itemView.getContext())
-                           .load(photo.url())
-                           .resize(photoImageView.getWidth(), photoImageView.getHeight())
-                           .onlyScaleDown()
-                           .centerCrop()
-                           .into(photoImageView);
-
-                    itemView.removeOnLayoutChangeListener(this);
-                }
-            });
-            */
+                       @Override
+                       public void onError() {
+                           // in production ready app we should definitely handle this
+                       }
+                   });
         }
     }
 

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,14 +55,33 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
         View view = inflater.inflate(R.layout.photo_feed_screen, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        final LinearLayoutManager photosLayoutManager = new LinearLayoutManager(getContext());
+        final int spanCount = getResources().getInteger(R.integer.photo_feed_span_count);
+        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), spanCount);
+        final GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(getContext(), layoutManager,
+                R.dimen.grid);
+
         photosRecyclerView.setHasFixedSize(true);
-        photosRecyclerView.setLayoutManager(photosLayoutManager);
+        photosRecyclerView.setLayoutManager(layoutManager);
+        photosRecyclerView.addItemDecoration(itemDecoration);
         photosRecyclerView.setAdapter(photosAdapter = new PhotoFeedAdapter());
+        photosRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            final int newSpanCount = getResources().getInteger(R.integer.photo_feed_span_count);
+            layoutManager.setSpanCount(newSpanCount);
+            photosRecyclerView.invalidateItemDecorations();
+        });
 
         presenter = new PhotoFeedPresenter(this, FlickrFeedApplication.instance(getContext()).photoFeed());
 
         photosSwipeRefreshLayout.setOnRefreshListener(() -> presenter.refreshPhotos());
+
+        /* TODO decide on immersive mode
+        view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        */
 
         return view;
     }
