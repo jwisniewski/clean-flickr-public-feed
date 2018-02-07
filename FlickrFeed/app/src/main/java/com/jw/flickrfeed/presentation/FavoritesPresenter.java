@@ -6,7 +6,10 @@ import com.jw.flickrfeed.domain.FilterProfile.ScoredTag;
 import java.util.List;
 
 /**
- * TODO
+ * Presents an editable list of favorite tags collected by the {@link FilterProfile}.
+ * <p>
+ * Integrates a presentation logic with an interface of {@link Navigator} switching between presenters
+ * and an interface of {@link View} responsible for actual rendering of the content.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */

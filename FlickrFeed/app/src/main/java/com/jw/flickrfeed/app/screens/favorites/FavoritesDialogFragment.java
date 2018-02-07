@@ -27,6 +27,8 @@ import fisk.chipcloud.ChipDeletedListener;
 import java.util.List;
 
 /**
+ * A bottom sheet dialog with favorite tags (basing on the {@link FilterProfile}.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 public class FavoritesDialogFragment extends BottomSheetDialogFragment

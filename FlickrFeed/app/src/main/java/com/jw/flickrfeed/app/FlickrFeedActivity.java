@@ -23,13 +23,19 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- * Main activity, an entry point of the app, inviting a user with a fresh list of photos downloaded from Flickr.
+ * Main activity, an entry point of the app, invites a user with a fresh list of photos downloaded from Flickr.
+ * <p>
+ * In this simple, one activity project, the main activity has been used to assemble our 'domain' objects
+ * and provide mechanisms to inject them into fragments (via {@link FavoritesScope} and {@link PhotoFeedScope}).
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 @Accessors(fluent = true)
 public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeedScope, FavoritesScope {
 
+    /**
+     * Flickr API endpoint to use by the {@link FlickrApi}.
+     */
     private static final String FLICKR_API_BASE_URL = "https://api.flickr.com";
 
     @Getter
@@ -77,14 +83,19 @@ public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeed
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        createDomain();
+        super.onCreate(savedInstanceState);
+    }
 
-        // TODO simplify AppFragmentActivity
+    /**
+     * Assembles our domain objects, a Flickr photos repository, photo feed service and the 'smart' filter
+     * collecting user choices in order to build the favorite list of tags.
+     */
+    private void createDomain() {
         final FlickrApi flickrApi = new FlickrApiFactory().verbose(BuildConfig.DEBUG).create(FLICKR_API_BASE_URL);
         final FlickrPhotoRepository flickrPhotoRepository = new FlickrPhotoRepository(flickrApi);
 
         photoFeed = new PhotoFeed(flickrPhotoRepository);
         filterProfile = new FilterProfile();
-
-        super.onCreate(savedInstanceState);
     }
 }

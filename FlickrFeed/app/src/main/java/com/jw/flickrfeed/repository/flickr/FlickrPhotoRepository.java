@@ -9,10 +9,11 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Provides a list of latest {@link Photo}s from the Flickr Public Feed
@@ -48,12 +49,12 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
                   .observeOn(AndroidSchedulers.mainThread())
                   .map(FlickrPublicPhotos::items)
                   .flatMap(items -> Observable.fromIterable(items)
-                                              .map(this::itemToPhoto)
+                                              .map(this::mapItemToPhoto)
                                               .toList());
     }
 
     @NonNull
-    Photo itemToPhoto(@NonNull FlickrPublicPhotos.Item item) {
+    private Photo mapItemToPhoto(@NonNull FlickrPublicPhotos.Item item) {
         return Photo.builder()
                     .author(extractQuotedAuthorName(item.author()))
                     .tags(splitTags(item.tags()))
@@ -64,7 +65,7 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     }
 
     @NonNull
-    String joinTags(@NonNull Collection<String> tags) {
+    private String joinTags(@NonNull Collection<String> tags) {
         StringBuilder sb = new StringBuilder();
         for (String tag : tags) {
             if (sb.length() > 0) {
@@ -76,15 +77,15 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     }
 
     @NonNull
-    List<String> splitTags(@NonNull String tags) {
-        return Collections.unmodifiableList(Observable.fromArray(tags.split(TAGS_SPLIT_SEPARATOR))
-                                                      .filter(tag -> !tag.isEmpty())
-                                                      .toList()
-                                                      .blockingGet());
+    private List<String> splitTags(@NonNull String tags) {
+        return unmodifiableList(Observable.fromArray(tags.split(TAGS_SPLIT_SEPARATOR))
+                                          .filter(tag -> !tag.isEmpty())
+                                          .toList()
+                                          .blockingGet());
     }
 
     @NonNull
-    String extractQuotedAuthorName(@NonNull String flickrFeedAuthor) {
+    private String extractQuotedAuthorName(@NonNull String flickrFeedAuthor) {
         Matcher matcher = AUTHOR_NAME_PATTERN.matcher(flickrFeedAuthor);
         if (matcher.find()) {
             return matcher.group(1);

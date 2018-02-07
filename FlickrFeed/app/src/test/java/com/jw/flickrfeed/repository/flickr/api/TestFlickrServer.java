@@ -5,8 +5,11 @@ import fi.iki.elonen.NanoHTTPD;
 import java.io.IOException;
 
 /**
+ * Simple HTTP server simulating communication with the Flickr API.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
+@SuppressWarnings("WeakerAccess")
 public class TestFlickrServer extends NanoHTTPD {
 
     public static final int PORT = 9876;

@@ -8,7 +8,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import java.util.List;
 
 /**
- * Presents manually refreshable and filterable photo feed.
+ * Presents a photo feed. Supports refreshing. Supports filtering based on the {@link FilterProfile} which collects
+ * tags of recently chosen photos.
+ * <p>
+ * Integrates a presentation logic with an interface of {@link Navigator} switching between presenters
+ * and an interface of {@link View} responsible for actual rendering of the content.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
