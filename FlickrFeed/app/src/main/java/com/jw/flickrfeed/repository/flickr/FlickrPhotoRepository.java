@@ -45,12 +45,13 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
 
     @NonNull
     @Override
+    @SuppressWarnings("Convert2MethodRef")
     public Single<List<Photo>> loadLatestPhotos(@NonNull Collection<String> tags) {
         return api.pullPublicPhotos(joinTags(tags))
                   .observeOn(AndroidSchedulers.mainThread())
-                  .map(FlickrPublicPhotos::items)
+                  .map(photos -> photos.items())
                   .flatMap(items -> Observable.fromIterable(items)
-                                              .map(this::mapItemToPhoto)
+                                              .map(item -> mapItemToPhoto(item))
                                               .toList());
     }
 

@@ -3,6 +3,7 @@ package com.jw.flickrfeed.domain;
 import android.support.annotation.NonNull;
 import io.reactivex.Observable;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,30 +11,26 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- * A profile of user choices, generating the {@link Filter} automatically.
+ * A profile of user choices. Generates a {@link Filter} automatically, collects the most frequently used tags
+ * and builds a filter with them.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 @Accessors(fluent = true)
 public class FilterProfile {
 
-    @Accessors(fluent = true)
-    public static class ScoredTag implements Comparable<ScoredTag> {
+    static class ScoredTag {
 
-        @Getter
+        static final Comparator<ScoredTag> DESC_SCORE_COMPARATOR = (first, second) ->
+                Float.compare(second.score, first.score);
+
         @NonNull
         final String tag;
 
-        @Getter
         float score;
 
         ScoredTag(@NonNull String tag) {
             this.tag = tag;
-        }
-
-        @Override
-        public int compareTo(@NonNull ScoredTag other) {
-            return Float.compare(score, other.score);
         }
 
         @Override
@@ -45,15 +42,9 @@ public class FilterProfile {
     @NonNull
     private final Map<String, ScoredTag> scoredTags = new HashMap<>();
 
-    /**
-     * Amount of score evaporating on every train session by a multiplication with the accumulated score.
-     */
     @Getter
     private float decay = 0.1f;
 
-    /**
-     * Amount of score added every time the tag has been available in a wining set.
-     */
     @Getter
     private float reward = 1.0f;
 
@@ -63,18 +54,31 @@ public class FilterProfile {
     @Getter
     int favouriteLimit = 20;
 
+    /**
+     * Amount of score evaporating on every train session by a multiplication with the accumulated score.
+     */
     public void setDecay(float decay) {
         this.decay = Math.max(decay, 0.0f);
     }
 
+    /**
+     * Amount of score added every time the tag has been available in a wining set.
+     */
     public void setReward(float reward) {
         this.reward = Math.max(reward, 0.0f);
     }
 
+    /**
+     * A threshold of accumulated rewards necessary to accept a given tag as a favourite and put it into the
+     * {@link Filter}.
+     */
     public void setFavouriteThreshold(float threshold) {
         this.favouriteThreshold = Math.max(threshold, 0.0f);
     }
 
+    /**
+     * Maximum number of tags which can be used to build a resulting {@link Filter}.
+     */
     public void setFavouriteLimit(int limit) {
         this.favouriteLimit = Math.max(limit, 0);
     }
@@ -86,29 +90,34 @@ public class FilterProfile {
         }
     }
 
-    public void clear() {
+    /**
+     * Removes all the collected tags.
+     */
+    public void reset() {
         scoredTags.clear();
     }
 
-    public void removeTag(String tag) {
+    /**
+     * Removes a selected tag.
+     *
+     * @param tag the tag to forget about.
+     */
+    public void removeTag(@NonNull String tag) {
         scoredTags.remove(tag);
     }
 
     @NonNull
     public Filter buildFilter() {
-        final List<String> filterTags = Observable.fromIterable(countFavoriteTags())
-                                                  .map(scoredTag -> scoredTag.tag)
-                                                  .toList()
-                                                  .blockingGet();
-
-        return new Filter(filterTags);
+        return new Filter(countFavoriteTags());
     }
 
-    public List<ScoredTag> countFavoriteTags() {
+    @SuppressWarnings("Convert2MethodRef")
+    public List<String> countFavoriteTags() {
         return Observable.fromIterable(scoredTags.values())
-                         .filter(sortedTag -> sortedTag.score >= favouriteThreshold)
-                         .sorted()
+                         .filter(scoredTag -> scoredTag.score >= favouriteThreshold)
+                         .sorted(ScoredTag.DESC_SCORE_COMPARATOR)
                          .take(favouriteLimit)
+                         .map(scoredTag -> scoredTag.toString())
                          .toList()
                          .blockingGet();
     }

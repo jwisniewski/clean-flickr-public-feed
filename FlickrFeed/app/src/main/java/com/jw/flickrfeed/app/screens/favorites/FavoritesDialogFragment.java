@@ -116,7 +116,7 @@ public class FavoritesDialogFragment extends BottomSheetDialogFragment
     }
 
     @Override
-    public void showFavoriteTags(@NonNull List<FilterProfile.ScoredTag> tags) {
+    public void showFavoriteTags(@NonNull List<String> tags) {
         tagsFlexboxLayout.setVisibility(View.VISIBLE);
         tagsCloud.addChips(tags);
     }
