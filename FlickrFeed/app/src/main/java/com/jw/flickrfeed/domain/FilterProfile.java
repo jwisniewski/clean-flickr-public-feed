@@ -43,7 +43,7 @@ public class FilterProfile {
     private final Map<String, ScoredTag> scoredTags = new HashMap<>();
 
     @Getter
-    private float decay = 0.1f;
+    private float decay = 0.2f;
 
     @Getter
     private float reward = 1.0f;
@@ -52,7 +52,7 @@ public class FilterProfile {
     private float favouriteThreshold = 0.5f;
 
     @Getter
-    int favouriteLimit = 20;
+    int favouriteLimit = 10;
 
     /**
      * Amount of score evaporating on every train session by a multiplication with the accumulated score.
@@ -106,11 +106,21 @@ public class FilterProfile {
         scoredTags.remove(tag);
     }
 
+    /**
+     * Builds a {@link Filter} with a list of favorite tags.
+     *
+     * @return the filter.
+     */
     @NonNull
     public Filter buildFilter() {
         return new Filter(countFavoriteTags());
     }
 
+    /**
+     * Returns a list of favorite tags.
+     *
+     * @return the list of tags.
+     */
     @SuppressWarnings("Convert2MethodRef")
     public List<String> countFavoriteTags() {
         return Observable.fromIterable(scoredTags.values())
