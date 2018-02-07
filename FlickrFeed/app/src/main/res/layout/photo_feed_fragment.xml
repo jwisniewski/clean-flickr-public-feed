@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:backgroundTint="?android:colorAccent"
         android:src="@drawable/ic_favorite_border_black_24dp"
         android:tint="?android:textColorPrimary" />
 
