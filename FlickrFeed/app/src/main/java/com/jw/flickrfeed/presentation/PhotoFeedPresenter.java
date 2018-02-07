@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.jw.flickrfeed.domain.FilterProfile;
 import com.jw.flickrfeed.domain.Photo;
 import com.jw.flickrfeed.domain.PhotoFeed;
-import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -98,10 +97,7 @@ public class PhotoFeedPresenter {
         if (photo.tags().isEmpty()) {
             view.showSelectedPhotoNotTaggedHint();
         } else {
-            view.showRefreshing(true);
-            filterProfile.train(photo.tags());
-            photoFeed.filter(filterProfile.buildFilter())
-                     .subscribe(refreshCompletionObserver);
+            filterProfile.trainFilter(photo.tags());
         }
     }
 
@@ -111,9 +107,5 @@ public class PhotoFeedPresenter {
 
     public void presentFavorites() {
         navigator.navigateToFavourites();
-    }
-
-    private void trackRefreshCompletion(@NonNull Completable completable) {
-
     }
 }

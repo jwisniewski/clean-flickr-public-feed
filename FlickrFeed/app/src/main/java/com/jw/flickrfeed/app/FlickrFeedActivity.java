@@ -87,6 +87,12 @@ public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeed
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        destroyDomain();
+    }
+
     /**
      * Assembles our domain objects, a Flickr photos repository, photo feed service and the 'smart' filter
      * collecting user choices in order to build the favorite list of tags.
@@ -95,7 +101,14 @@ public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeed
         final FlickrApi flickrApi = new FlickrApiFactory().verbose(BuildConfig.DEBUG).create(FLICKR_API_BASE_URL);
         final FlickrPhotoRepository flickrPhotoRepository = new FlickrPhotoRepository(flickrApi);
 
-        photoFeed = new PhotoFeed(flickrPhotoRepository);
         filterProfile = new FilterProfile();
+
+        photoFeed = new PhotoFeed(flickrPhotoRepository);
+        photoFeed.observe(filterProfile.observableFilter());
+    }
+
+    private void destroyDomain() {
+        photoFeed.destroy();
+        filterProfile.destroy();
     }
 }

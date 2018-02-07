@@ -42,7 +42,7 @@ public class FavoritesPresenter {
         this.view = view;
         this.filterProfile = filterProfile;
 
-        List<String> favouriteTags = filterProfile.countFavoriteTags();
+        List<String> favouriteTags = filterProfile.getFilter().tags();
         if (favouriteTags.isEmpty()) {
             view.hideFavoriteTags();
             view.showClearFavoriteTagsButton(false);
@@ -64,7 +64,7 @@ public class FavoritesPresenter {
     public void clearFavoriteTag(@NonNull String tag) {
         filterProfile.removeTag(tag);
 
-        if (filterProfile.countFavoriteTags().isEmpty()) {
+        if (filterProfile.getFilter().tags().isEmpty()) {
             navigator.navigateBack();
         }
     }
