@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 public class FilterProfile {
 
     @Accessors(fluent = true)
-    static class ScoredTag implements Comparable<ScoredTag> {
+    public static class ScoredTag implements Comparable<ScoredTag> {
 
         @Getter
         @NonNull
@@ -34,6 +34,11 @@ public class FilterProfile {
         @Override
         public int compareTo(@NonNull ScoredTag other) {
             return Float.compare(score, other.score);
+        }
+
+        @Override
+        public String toString() {
+            return tag;
         }
     }
 
@@ -85,9 +90,13 @@ public class FilterProfile {
         scoredTags.clear();
     }
 
+    public void removeTag(String tag) {
+        scoredTags.remove(tag);
+    }
+
     @NonNull
     public Filter buildFilter() {
-        final List<String> filterTags = Observable.fromIterable(countFavouriteTags())
+        final List<String> filterTags = Observable.fromIterable(countFavoriteTags())
                                                   .map(scoredTag -> scoredTag.tag)
                                                   .toList()
                                                   .blockingGet();
@@ -95,7 +104,7 @@ public class FilterProfile {
         return new Filter(filterTags);
     }
 
-    public List<ScoredTag> countFavouriteTags() {
+    public List<ScoredTag> countFavoriteTags() {
         return Observable.fromIterable(scoredTags.values())
                          .filter(sortedTag -> sortedTag.score >= favouriteThreshold)
                          .sorted()

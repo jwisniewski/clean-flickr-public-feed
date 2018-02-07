@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Flickr Feed</string>
-
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="connection_issue_try_later">Oops! Check connection or try later!</string>
     <string name="photo_description">A photo</string>
+    <string name="favorite_tags">Favorite tags</string>
+    <string name="how_to_select_favorites">Tap on photos you like, app will (try to) learn your preferences. You can edit them here. Interested in a given photo? Long press for details.</string>
+    <string name="clear_favorites">Clear favorites</string>
+    <string name="photo_tagged">Photo is tagged</string>
 </resources>
