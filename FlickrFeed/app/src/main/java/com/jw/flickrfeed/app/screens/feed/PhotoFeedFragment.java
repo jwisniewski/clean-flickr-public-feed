@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.jw.base.ui.activities.AppFragment;
 import com.jw.base.ui.views.GridSpacingItemDecoration;
 import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.domain.Photo;
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
-public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter.View,
+public class PhotoFeedFragment extends Fragment implements PhotoFeedPresenter.View,
         PhotoFeedAdapter.PhotoIntegrationListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.photosSwipeRefreshLayout)

@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import com.jw.base.ui.activities.AppFragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import com.jw.flickrfeed.BuildConfig;
+import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.app.screens.favorites.FavoritesDialogFragment;
 import com.jw.flickrfeed.app.screens.favorites.FavoritesScope;
 import com.jw.flickrfeed.app.screens.feed.PhotoFeedFragment;
@@ -31,7 +32,7 @@ import lombok.experimental.Accessors;
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 @Accessors(fluent = true)
-public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeedScope, FavoritesScope {
+public class FlickrFeedActivity extends AppCompatActivity implements PhotoFeedScope, FavoritesScope {
 
     /**
      * Flickr API endpoint to use by the {@link FlickrApi}.
@@ -75,21 +76,25 @@ public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeed
         }
     };
 
-    @Nullable
-    @Override
-    public Fragment createStartupFragment(@NonNull Intent intent) {
-        return PhotoFeedFragment.newInstance();
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        createDomain();
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.fragment_container);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                                       .add(R.id.fragmentContainer, PhotoFeedFragment.newInstance())
+                                       .commit();
+        }
+
+        createDomain();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         destroyDomain();
     }
 
