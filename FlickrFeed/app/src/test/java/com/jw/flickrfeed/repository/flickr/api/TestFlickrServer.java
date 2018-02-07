@@ -32,7 +32,8 @@ public class TestFlickrServer extends NanoHTTPD {
         try {
             if (session.getMethod() == Method.GET &&
                     session.getUri().equals("/services/feeds/photos_public.gne") &&
-                    session.getQueryParameterString().equals("format=json&nojsoncallback=1")) {
+                    session.getQueryParameterString().contains("format=json") &&
+                    session.getQueryParameterString().contains("nojsoncallback=1")) {
                 return servePublicPhotosFeed();
             }
 

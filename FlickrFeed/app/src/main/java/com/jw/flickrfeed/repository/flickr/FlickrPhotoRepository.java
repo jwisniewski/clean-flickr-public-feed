@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableList;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
+@SuppressWarnings("WeakerAccess")
 public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
 
     /**
@@ -54,7 +55,7 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     }
 
     @NonNull
-    private Photo mapItemToPhoto(@NonNull FlickrPublicPhotos.Item item) {
+    public Photo mapItemToPhoto(@NonNull FlickrPublicPhotos.Item item) {
         return Photo.builder()
                     .author(extractQuotedAuthorName(item.author()))
                     .tags(splitTags(item.tags()))
@@ -65,7 +66,17 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     }
 
     @NonNull
-    private String joinTags(@NonNull Collection<String> tags) {
+    public String extractQuotedAuthorName(@NonNull String flickrFeedAuthor) {
+        Matcher matcher = AUTHOR_NAME_PATTERN.matcher(flickrFeedAuthor);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return flickrFeedAuthor;
+        }
+    }
+
+    @NonNull
+    private static String joinTags(@NonNull Collection<String> tags) {
         StringBuilder sb = new StringBuilder();
         for (String tag : tags) {
             if (sb.length() > 0) {
@@ -77,20 +88,10 @@ public class FlickrPhotoRepository implements PhotoFeed.PhotoRepository {
     }
 
     @NonNull
-    private List<String> splitTags(@NonNull String tags) {
+    private static List<String> splitTags(@NonNull String tags) {
         return unmodifiableList(Observable.fromArray(tags.split(TAGS_SPLIT_SEPARATOR))
                                           .filter(tag -> !tag.isEmpty())
                                           .toList()
                                           .blockingGet());
-    }
-
-    @NonNull
-    private String extractQuotedAuthorName(@NonNull String flickrFeedAuthor) {
-        Matcher matcher = AUTHOR_NAME_PATTERN.matcher(flickrFeedAuthor);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            return flickrFeedAuthor;
-        }
     }
 }

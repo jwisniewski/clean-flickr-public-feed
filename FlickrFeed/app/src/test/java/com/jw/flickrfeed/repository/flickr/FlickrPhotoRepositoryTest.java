@@ -41,10 +41,19 @@ public class FlickrPhotoRepositoryTest extends AppTest {
     }
 
     @Test
-    public void pullPublicPhotosShouldQueryFlickrApi() {
+    public void loadLatestPhotosShouldQueryFlickrApi() {
         sut.loadLatestPhotos(Collections.emptyList());
 
         verify(flickrApi, times(1)).pullPublicPhotos(anyString());
+    }
+
+    @Test
+    public void loadLatestPhotosShouldJoinTags() {
+        List<String> tags = Arrays.asList("tag1", "tag2", "tag3");
+
+        sut.loadLatestPhotos(tags);
+
+        verify(flickrApi, times(1)).pullPublicPhotos("tag1,tag2,tag3");
     }
 
     @Test
@@ -71,15 +80,6 @@ public class FlickrPhotoRepositoryTest extends AppTest {
         Photo photo = sut.mapItemToPhoto(givenItem);
 
         assertEquals(expectedPhoto, photo);
-    }
-
-    @Test
-    public void joinTagsShouldJoinListOfTags() {
-        List<String> tags = Arrays.asList("tag1", "tag2", "tag3");
-
-        String joinedTags = sut.joinTags(tags);
-
-        assertEquals("tag1,tag2,tag3", joinedTags);
     }
 
     @Test

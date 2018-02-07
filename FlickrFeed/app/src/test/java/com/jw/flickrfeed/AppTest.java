@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
+ * Base class of our unit tests.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 @RunWith(MockitoJUnitRunner.class)
