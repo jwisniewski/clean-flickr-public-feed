@@ -1,6 +1,7 @@
 package com.jw.flickrfeed.presentation;
 
 import android.support.annotation.NonNull;
+import com.jw.flickrfeed.domain.FilterProfile;
 import com.jw.flickrfeed.domain.Photo;
 import com.jw.flickrfeed.domain.PhotoFeed;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,12 +33,17 @@ public class PhotoFeedPresenter {
     private final PhotoFeed photoFeed;
 
     @NonNull
+    private final FilterProfile filterProfile;
+
+    @NonNull
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    public PhotoFeedPresenter(@NonNull Navigator navigator, @NonNull View view, @NonNull PhotoFeed photoFeed) {
+    public PhotoFeedPresenter(@NonNull Navigator navigator, @NonNull View view, @NonNull PhotoFeed photoFeed,
+            @NonNull FilterProfile filterProfile) {
         this.navigator = navigator;
         this.view = view;
         this.photoFeed = photoFeed;
+        this.filterProfile = filterProfile;
 
         disposables.add(photoFeed.observablePhotos()
                                  .subscribe(view::showPhotos));
@@ -60,7 +66,16 @@ public class PhotoFeedPresenter {
     }
 
     public void selectPhoto(@NonNull Photo photo) {
-        // TODO
+        filterProfile.train(photo.tags());
+
+        // TODO code duplication (see refreshPhotos())
+        view.showRefreshing(true);
+        photoFeed.filter(filterProfile.buildFilter()).subscribe(() -> {
+            view.showRefreshing(false);
+        }, throwable -> {
+            view.showRefreshing(false);
+            view.showTryLaterHint();
+        });
     }
 
     public void requestPhotoDetails(@NonNull Photo photo) {

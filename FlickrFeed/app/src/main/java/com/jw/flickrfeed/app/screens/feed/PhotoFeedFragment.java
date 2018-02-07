@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.jw.base.ui.activities.AppFragment;
+import com.jw.base.ui.views.GridSpacingItemDecoration;
 import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.app.FlickrFeedApplication;
 import com.jw.flickrfeed.domain.Photo;
@@ -29,6 +31,8 @@ import java.util.List;
  */
 public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter.View,
         PhotoFeedAdapter.PhotoIntegrationListener, SwipeRefreshLayout.OnRefreshListener {
+
+    static final String TAG = PhotoFeedFragment.class.getSimpleName();
 
     @BindView(R.id.photosSwipeRefreshLayout)
     SwipeRefreshLayout photosSwipeRefreshLayout;
@@ -47,11 +51,6 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
     @NonNull
     public static PhotoFeedFragment newInstance() {
         return new PhotoFeedFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -75,7 +74,8 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
             photosRecyclerView.invalidateItemDecorations();
         });
 
-        presenter = new PhotoFeedPresenter(navigator, this, FlickrFeedApplication.instance(getContext()).photoFeed());
+        final FlickrFeedApplication app = FlickrFeedApplication.instance(getContext());
+        presenter = new PhotoFeedPresenter(navigator, this, app.photoFeed(), app.filterProfile());
 
         photosAdapter.setPhotoIntegrationListener(this);
         photosSwipeRefreshLayout.setOnRefreshListener(this);
@@ -114,31 +114,43 @@ public class PhotoFeedFragment extends AppFragment implements PhotoFeedPresenter
 
     @Override
     public void onRefresh() {
+        Log.d(TAG, "onRefresh");
+
         presenter.refreshPhotos();
     }
 
     @Override
     public void onPhotoSelected(@NonNull Photo photo) {
+        Log.d(TAG, "onPhotoSelected: " + photo);
+
         presenter.selectPhoto(photo);
     }
 
     @Override
     public void onPhotoDetailsRequested(@NonNull Photo photo) {
+        Log.d(TAG, "onPhotoDetailsRequested: " + photo);
+
         presenter.requestPhotoDetails(photo);
     }
 
     @Override
     public void showRefreshing(boolean refreshing) {
+        Log.d(TAG, "showRefreshing: " + refreshing);
+
         photosSwipeRefreshLayout.setRefreshing(refreshing);
     }
 
     @Override
     public void showPhotos(@NonNull List<Photo> photos) {
+        Log.d(TAG, "showPhotos: " + photos);
+
         photosAdapter.updateItems(photos);
     }
 
     @Override
     public void showTryLaterHint() {
+        Log.d(TAG, "showTryLaterHint");
+
         Snackbar.make(photosRecyclerView, R.string.connection_issue_try_later, Snackbar.LENGTH_LONG).show();
     }
 }

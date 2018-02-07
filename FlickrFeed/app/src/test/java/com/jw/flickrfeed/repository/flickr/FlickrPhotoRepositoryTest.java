@@ -2,6 +2,7 @@ package com.jw.flickrfeed.repository.flickr;
 
 import com.jw.flickrfeed.AppTest;
 import com.jw.flickrfeed.domain.Photo;
+import com.jw.flickrfeed.repository.flickr.FlickrPhotoRepository;
 import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
 import com.jw.flickrfeed.repository.flickr.api.FlickrPublicPhotos;
 import io.reactivex.Single;
@@ -39,7 +40,7 @@ public class FlickrPhotoRepositoryTest extends AppTest {
 
     @Test
     public void pullPublicPhotosShouldQueryFlickrApi() {
-        sut.pullLatestPhotos(Collections.emptyList());
+        sut.loadLatestPhotos(Collections.emptyList());
 
         verify(flickrApi, times(1)).pullPublicPhotos(anyString());
     }
@@ -54,10 +55,12 @@ public class FlickrPhotoRepositoryTest extends AppTest {
                 new Date(0),
                 "author",
                 "authorId",
-                "tags"
+                "tag1 tag2 tag3"
         );
 
-        final Photo expectedPhoto = Photo.builder().author("author")
+        final Photo expectedPhoto = Photo.builder()
+                                         .author("author")
+                                         .tags(Arrays.asList("tag1", "tag2", "tag3"))
                                          .publishedAt(new Date(0))
                                          .thumbnailUrl("media")
                                          .detailsUrl("link")

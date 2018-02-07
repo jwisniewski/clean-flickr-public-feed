@@ -86,6 +86,7 @@ public class FlickrApiFactory {
             final HttpUrl url = originalUrl.newBuilder()
                                            .addQueryParameter("format", "json")
                                            .addQueryParameter("nojsoncallback", "1")
+                                           .addQueryParameter("tagmode", "any")
                                            .build();
 
             final Request request = originalRequest.newBuilder()

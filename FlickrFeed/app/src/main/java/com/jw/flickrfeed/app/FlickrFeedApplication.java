@@ -3,6 +3,7 @@ package com.jw.flickrfeed.app;
 import android.app.Application;
 import android.content.Context;
 import com.jw.flickrfeed.BuildConfig;
+import com.jw.flickrfeed.domain.FilterProfile;
 import com.jw.flickrfeed.domain.PhotoFeed;
 import com.jw.flickrfeed.repository.flickr.FlickrPhotoRepository;
 import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
@@ -21,11 +22,11 @@ public class FlickrFeedApplication extends Application {
 
     private static final String FLICKR_API_BASE_URL = "https://api.flickr.com";
 
-    /**
-     * Domain representative with a lifespan equal to the application process.
-     */
     @Getter
     private PhotoFeed photoFeed;
+
+    @Getter
+    private FilterProfile filterProfile;
 
     /**
      * Application creation callback used to assemble everything together.
@@ -37,7 +38,9 @@ public class FlickrFeedApplication extends Application {
         final FlickrApi flickrApi = new FlickrApiFactory().verbose(BuildConfig.DEBUG).create(FLICKR_API_BASE_URL);
         final FlickrPhotoRepository flickrPhotoRepository = new FlickrPhotoRepository(flickrApi);
 
-        photoFeed = new PhotoFeed(flickrPhotoRepository, null); // TODO fixme
+        photoFeed = new PhotoFeed(flickrPhotoRepository);
+
+        filterProfile = new FilterProfile();
     }
 
     /**
