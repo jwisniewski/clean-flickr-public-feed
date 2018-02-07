@@ -98,6 +98,7 @@ public class PhotoFeedPresenter {
         if (photo.tags().isEmpty()) {
             view.showSelectedPhotoNotTaggedHint();
         } else {
+            view.showRefreshing(true);
             filterProfile.train(photo.tags());
             photoFeed.filter(filterProfile.buildFilter())
                      .subscribe(refreshCompletionObserver);
