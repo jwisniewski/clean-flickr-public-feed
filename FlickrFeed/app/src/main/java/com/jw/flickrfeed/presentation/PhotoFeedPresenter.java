@@ -4,7 +4,10 @@ import android.support.annotation.NonNull;
 import com.jw.flickrfeed.domain.FilterProfile;
 import com.jw.flickrfeed.domain.Photo;
 import com.jw.flickrfeed.domain.PhotoFeed;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import java.util.List;
 
 /**
@@ -51,6 +54,25 @@ public class PhotoFeedPresenter {
     @NonNull
     private final CompositeDisposable disposables = new CompositeDisposable();
 
+    @NonNull
+    private final CompletableObserver refreshCompletionObserver = new CompletableObserver() {
+        @Override
+        public void onSubscribe(Disposable d) {
+            disposables.add(d);
+        }
+
+        @Override
+        public void onComplete() {
+            view.showRefreshing(false);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            view.showRefreshing(false);
+            view.showTryLaterHint();
+        }
+    };
+
     public PhotoFeedPresenter(@NonNull View view, @NonNull Navigator navigator, @NonNull PhotoFeed photoFeed,
             @NonNull FilterProfile filterProfile) {
         this.navigator = navigator;
@@ -68,12 +90,8 @@ public class PhotoFeedPresenter {
 
     public void refreshPhotos() {
         view.showRefreshing(true);
-        photoFeed.refresh().subscribe(() -> {
-            view.showRefreshing(false);
-        }, throwable -> {
-            view.showRefreshing(false);
-            view.showTryLaterHint();
-        });
+        photoFeed.refresh()
+                 .subscribe(refreshCompletionObserver);
     }
 
     public void selectPhoto(@NonNull Photo photo) {
@@ -81,15 +99,8 @@ public class PhotoFeedPresenter {
             view.showSelectedPhotoNotTaggedHint();
         } else {
             filterProfile.train(photo.tags());
-
-            // TODO code duplication (see refreshPhotos())
-            view.showRefreshing(true);
-            photoFeed.filter(filterProfile.buildFilter()).subscribe(() -> {
-                view.showRefreshing(false);
-            }, throwable -> {
-                view.showRefreshing(false);
-                view.showTryLaterHint();
-            });
+            photoFeed.filter(filterProfile.buildFilter())
+                     .subscribe(refreshCompletionObserver);
         }
     }
 
@@ -99,5 +110,9 @@ public class PhotoFeedPresenter {
 
     public void presentFavorites() {
         navigator.navigateToFavourites();
+    }
+
+    private void trackRefreshCompletion(@NonNull Completable completable) {
+
     }
 }
