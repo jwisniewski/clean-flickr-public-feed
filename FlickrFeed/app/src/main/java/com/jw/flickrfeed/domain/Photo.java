@@ -2,12 +2,13 @@ package com.jw.flickrfeed.domain;
 
 import android.support.annotation.NonNull;
 import java.util.Date;
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
 /**
- * Immutable representation of a photography taken by a concrete author at concrete time.
+ * Immutable representation of a photo taken by a concrete author at concrete time.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
@@ -17,14 +18,17 @@ import lombok.experimental.Accessors;
 public class Photo {
 
     @NonNull
-    String thumbnailUrl;
+    private String thumbnailUrl;
 
     @NonNull
-    String detailsUrl;
+    private String detailsUrl;
 
     @NonNull
-    Date publishedAt;
+    private Date publishedAt;
 
     @NonNull
-    String author;
+    private List<String> tags;
+
+    @NonNull
+    private String author;
 }

@@ -10,6 +10,7 @@
     <dimen name="grid_4x">32dp</dimen>
     <dimen name="grid_5x">40dp</dimen>
     <dimen name="grid_6x">48dp</dimen>
+    <dimen name="grid_7x">56dp</dimen>
     <dimen name="grid_8x">64dp</dimen>
 
     <!-- Default elevations -->

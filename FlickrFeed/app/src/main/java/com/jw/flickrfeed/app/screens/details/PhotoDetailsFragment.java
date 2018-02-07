@@ -1,7 +1,7 @@
 package com.jw.flickrfeed.app.screens.details;
 
 /**
- * TODO implement me
+ * TODO just a placeholder to show a direction of the architecture, resigned from implementation for MVP
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */

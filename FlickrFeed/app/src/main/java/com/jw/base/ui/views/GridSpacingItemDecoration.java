@@ -1,4 +1,4 @@
-package com.jw.flickrfeed.app.screens.feed;
+package com.jw.base.ui.views;
 
 import android.content.Context;
 import android.graphics.Rect;

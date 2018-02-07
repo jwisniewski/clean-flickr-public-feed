@@ -177,6 +177,8 @@ public abstract class AppFragmentActivity extends AppCompatActivity
         }
     }
 
+
+
     @Nullable
     public abstract Fragment createStartupFragment(@NonNull Intent intent);
 

@@ -1,6 +1,5 @@
 package com.jw.flickrfeed.app.screens.feed;
 
-import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.res.ColorStateList.valueOf;
+
 /**
  * Adapts a list of {@link Photo} as the {@link RecyclerView}s data source.
  *
@@ -40,11 +41,17 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         @BindView(R.id.itemContent)
         ViewGroup itemContent;
 
+        @BindView(R.id.photoDetailsLayout)
+        ViewGroup photoDetailsLayout;
+
         @BindView(R.id.photoImageView)
         ImageView photoImageView;
 
-        @BindView(R.id.photoTextView)
-        TextView photoTextView;
+        @BindView(R.id.authorTextView)
+        TextView authorTextView;
+
+        @BindView(R.id.tagsIndicatorImageView)
+        ImageView tagsIndicatorImageView;
 
         @NonNull
         public static ViewHolder create(@NonNull ViewGroup parent) {
@@ -59,7 +66,9 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         }
 
         public void bind(@NonNull Photo photo, @Nullable PhotoIntegrationListener listener) {
-            photoTextView.setVisibility(View.INVISIBLE);
+            photoDetailsLayout.setVisibility(View.GONE);
+            authorTextView.setVisibility(View.GONE);
+            tagsIndicatorImageView.setVisibility(View.GONE);
 
             Picasso.with(photoImageView.getContext())
                    .load(photo.thumbnailUrl())
@@ -70,12 +79,20 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
                        public void onSuccess() {
                            Palette.from(((BitmapDrawable) photoImageView.getDrawable()).getBitmap())
                                   .generate(palette -> {
-                                      Palette.Swatch swatch = palette.getMutedSwatch();
+                                      final Palette.Swatch swatch = palette.getMutedSwatch();
                                       if (swatch != null) {
-                                          photoTextView.setVisibility(View.VISIBLE);
-                                          photoTextView.setBackgroundTintList(ColorStateList.valueOf(swatch.getRgb()));
-                                          photoTextView.setTextColor(swatch.getBodyTextColor());
-                                          photoTextView.setText(photo.author());
+                                          photoDetailsLayout.setVisibility(View.VISIBLE);
+                                          photoDetailsLayout.setBackgroundTintList(valueOf(swatch.getRgb()));
+
+                                          authorTextView.setVisibility(View.VISIBLE);
+                                          authorTextView.setTextColor(swatch.getBodyTextColor());
+                                          authorTextView.setText(photo.author());
+
+                                          if (!photo.tags().isEmpty()) {
+                                              tagsIndicatorImageView.setVisibility(View.VISIBLE);
+                                              tagsIndicatorImageView.setImageTintList(
+                                                      valueOf(swatch.getBodyTextColor()));
+                                          }
                                       }
                                   });
                        }

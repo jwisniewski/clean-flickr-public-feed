@@ -3,7 +3,8 @@
     <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4050</color>
-    <color name="colorBackground">#000000</color>
+    <color name="colorBackground">#FF000000</color>
+    <color name="colorCardBackground">#FF424242</color>
     <color name="colorLightOverlay">#66000000</color>
     <color name="colorStrongOverlay">#DD000000</color>
 
