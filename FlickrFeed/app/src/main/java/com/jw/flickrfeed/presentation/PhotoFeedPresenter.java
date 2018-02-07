@@ -81,6 +81,8 @@ public class PhotoFeedPresenter {
 
         disposables.add(photoFeed.observablePhotos()
                                  .subscribe(view::showPhotos));
+
+        refreshPhotos();
     }
 
     public void destroy() {

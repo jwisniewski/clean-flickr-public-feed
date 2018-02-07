@@ -106,8 +106,6 @@ public class PhotoFeedFragment extends Fragment implements PhotoFeedPresenter.Vi
     @Override
     public void onResume() {
         super.onResume();
-
-        presenter.refreshPhotos();
     }
 
     @Override
