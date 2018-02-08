@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 
 /**
  * A profile of user choices. Generates a {@link Filter} automatically, collects the most frequently used tags
@@ -17,7 +16,6 @@ import lombok.experimental.Accessors;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
-@Accessors(fluent = true)
 public class FilterProfile {
 
     static class ScoredTag {
@@ -51,7 +49,7 @@ public class FilterProfile {
     private float favoriteThreshold = 0.5f;
 
     @Getter
-    int favoriteLimit = 10;
+    private int favoriteLimit = 10;
 
     public FilterProfile() {
         filterSubject.onNext(Filter.EMPTY);

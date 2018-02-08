@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
+@SuppressWarnings("Convert2MethodRef")
 public class PhotoFeed {
 
     /**
@@ -61,7 +62,7 @@ public class PhotoFeed {
     @NonNull
     public Completable refresh() {
         return photoRepository.loadLatestPhotos(filter.tags())
-                              .doOnSuccess(t -> photosSubject.onNext(t))
+                              .doOnSuccess(photos -> photosSubject.onNext(photos))
                               .toCompletable();
     }
 
@@ -82,7 +83,6 @@ public class PhotoFeed {
      *
      * @param observableFilter the filter to observe.
      */
-    @SuppressWarnings("Convert2MethodRef")
     public void observe(@Nullable Observable<Filter> observableFilter) {
         if (observedFilterDisposable != null) {
             observedFilterDisposable.dispose();
