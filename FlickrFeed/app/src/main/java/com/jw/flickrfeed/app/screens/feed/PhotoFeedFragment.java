@@ -81,7 +81,7 @@ public class PhotoFeedFragment extends Fragment implements PhotoFeedPresenter.Vi
 
         presenter = new PhotoFeedPresenter(this, scope.photoFeedNavigator(), scope.photoFeed(), scope.filterProfile());
 
-        photosAdapter.setPhotoIntegrationListener(this);
+        photosAdapter.setPhotoInteractionListener(this);
         photosSwipeRefreshLayout.setOnRefreshListener(this);
 
         return view;

@@ -36,7 +36,7 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         void onPhotoDetailsRequested(@NonNull Photo photo);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemContent)
         ViewGroup itemContent;
@@ -54,26 +54,24 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         ImageView tagsIndicatorImageView;
 
         @NonNull
-        public static ViewHolder create(@NonNull ViewGroup parent) {
+        static ViewHolder create(@NonNull ViewGroup parent) {
             return new ViewHolder(LayoutInflater.from(parent.getContext())
                                                 .inflate(R.layout.photo_feed_item, parent, false));
         }
 
-        private ViewHolder(@NonNull View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
 
             ButterKnife.bind(this, view);
         }
 
-        public void bind(@NonNull Photo photo, @Nullable PhotoIntegrationListener listener) {
+        void bind(@NonNull Photo photo, @Nullable PhotoIntegrationListener listener) {
             photoDetailsLayout.setVisibility(View.GONE);
             authorTextView.setVisibility(View.GONE);
             tagsIndicatorImageView.setVisibility(View.GONE);
 
             Picasso.with(photoImageView.getContext())
                    .load(photo.thumbnailUrl())
-                   .fit()
-                   .centerCrop()
                    .into(photoImageView, new Callback() {
                        @Override
                        public void onSuccess() {
@@ -150,7 +148,7 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         return photos.size();
     }
 
-    public void setPhotoIntegrationListener(@Nullable PhotoIntegrationListener photoIntegrationListener) {
+    public void setPhotoInteractionListener(@Nullable PhotoIntegrationListener photoIntegrationListener) {
         this.photoIntegrationListener = photoIntegrationListener;
         notifyDataSetChanged();
     }
