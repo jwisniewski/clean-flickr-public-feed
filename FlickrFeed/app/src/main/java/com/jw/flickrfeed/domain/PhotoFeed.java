@@ -89,7 +89,9 @@ public class PhotoFeed {
         }
 
         if (observableFilter != null) {
-            observedFilterDisposable = observableFilter.subscribe(filter -> filter(filter).subscribe());
+            observedFilterDisposable = observableFilter.subscribe(filter -> filter(filter)
+                    .onErrorComplete()
+                    .subscribe());
         }
     }
 
