@@ -6,6 +6,8 @@ import java.util.List;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Immutable representation of filtering criteria.
  * <p>
@@ -17,7 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class Filter {
 
-    public static final Filter EMPTY = new Filter(Collections.emptyList());
+    public static final Filter EMPTY = new Filter(emptyList());
 
     @NonNull
     private List<String> tags;

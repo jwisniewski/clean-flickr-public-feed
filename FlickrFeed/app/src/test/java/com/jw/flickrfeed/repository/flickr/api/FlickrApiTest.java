@@ -11,6 +11,8 @@ import static fi.iki.elonen.NanoHTTPD.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Flickr API sanity tests verifying compliance to the API at the time of development.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 public class FlickrApiTest extends AppTest {

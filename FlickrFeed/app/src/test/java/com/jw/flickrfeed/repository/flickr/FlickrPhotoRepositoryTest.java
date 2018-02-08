@@ -2,7 +2,7 @@ package com.jw.flickrfeed.repository.flickr;
 
 import com.jw.flickrfeed.AppTest;
 import com.jw.flickrfeed.domain.Photo;
-import com.jw.flickrfeed.repository.flickr.FlickrPhotoRepository;
+import com.jw.flickrfeed.domain.PhotoFeed;
 import com.jw.flickrfeed.repository.flickr.api.FlickrApi;
 import com.jw.flickrfeed.repository.flickr.api.FlickrPublicPhotos;
 import io.reactivex.Single;
@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+ * Tests of Flickr implementation of {@link PhotoFeed.PhotoRepository}.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 public class FlickrPhotoRepositoryTest extends AppTest {
@@ -39,10 +41,19 @@ public class FlickrPhotoRepositoryTest extends AppTest {
     }
 
     @Test
-    public void pullPublicPhotosShouldQueryFlickrApi() {
+    public void loadLatestPhotosShouldQueryFlickrApi() {
         sut.loadLatestPhotos(Collections.emptyList());
 
         verify(flickrApi, times(1)).pullPublicPhotos(anyString());
+    }
+
+    @Test
+    public void loadLatestPhotosShouldJoinTags() {
+        List<String> tags = Arrays.asList("tag1", "tag2", "tag3");
+
+        sut.loadLatestPhotos(tags);
+
+        verify(flickrApi, times(1)).pullPublicPhotos("tag1,tag2,tag3");
     }
 
     @Test
@@ -66,18 +77,9 @@ public class FlickrPhotoRepositoryTest extends AppTest {
                                          .detailsUrl("link")
                                          .build();
 
-        Photo photo = sut.itemToPhoto(givenItem);
+        Photo photo = sut.mapItemToPhoto(givenItem);
 
         assertEquals(expectedPhoto, photo);
-    }
-
-    @Test
-    public void joinTagsShouldJoinListOfTags() {
-        List<String> tags = Arrays.asList("tag1", "tag2", "tag3");
-
-        String joinedTags = sut.joinTags(tags);
-
-        assertEquals("tag1,tag2,tag3", joinedTags);
     }
 
     @Test

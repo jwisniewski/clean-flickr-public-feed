@@ -2,11 +2,13 @@ package com.jw.flickrfeed.presentation;
 
 import android.support.annotation.NonNull;
 import com.jw.flickrfeed.domain.FilterProfile;
-import com.jw.flickrfeed.domain.FilterProfile.ScoredTag;
 import java.util.List;
 
 /**
- * TODO
+ * Presents an editable list of favorite tags collected by the {@link FilterProfile}.
+ * <p>
+ * Integrates a presentation logic with an interface of {@link Navigator} switching between presenters
+ * and an interface of {@link View} responsible for actual rendering of the content.
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
@@ -19,7 +21,7 @@ public class FavoritesPresenter {
 
     public interface View {
 
-        void showFavoriteTags(@NonNull List<ScoredTag> tags);
+        void showFavoriteTags(@NonNull List<String> tags);
 
         void hideFavoriteTags();
 
@@ -40,7 +42,7 @@ public class FavoritesPresenter {
         this.view = view;
         this.filterProfile = filterProfile;
 
-        List<ScoredTag> favouriteTags = filterProfile.countFavoriteTags();
+        List<String> favouriteTags = filterProfile.getFilter().tags();
         if (favouriteTags.isEmpty()) {
             view.hideFavoriteTags();
             view.showClearFavoriteTagsButton(false);
@@ -51,7 +53,7 @@ public class FavoritesPresenter {
     }
 
     public void clearFavouritePhotos() {
-        filterProfile.clear();
+        filterProfile.reset();
 
         view.hideFavoriteTags();
         view.showClearFavoriteTagsButton(false);
@@ -62,7 +64,7 @@ public class FavoritesPresenter {
     public void clearFavoriteTag(@NonNull String tag) {
         filterProfile.removeTag(tag);
 
-        if (filterProfile.countFavoriteTags().isEmpty()) {
+        if (filterProfile.getFilter().tags().isEmpty()) {
             navigator.navigateBack();
         }
     }

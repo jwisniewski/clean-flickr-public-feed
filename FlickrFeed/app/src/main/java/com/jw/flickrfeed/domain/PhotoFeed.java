@@ -1,9 +1,11 @@
 package com.jw.flickrfeed.domain;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
+@SuppressWarnings("Convert2MethodRef")
 public class PhotoFeed {
 
     /**
@@ -30,6 +33,9 @@ public class PhotoFeed {
     @NonNull
     private final BehaviorSubject<List<Photo>> photosSubject = BehaviorSubject.create();
 
+    @Nullable
+    private Disposable observedFilterDisposable;
+
     @NonNull
     private Filter filter = Filter.EMPTY;
 
@@ -42,6 +48,10 @@ public class PhotoFeed {
      */
     public void destroy() {
         photosSubject.onComplete();
+
+        if (observedFilterDisposable != null) {
+            observedFilterDisposable.dispose();
+        }
     }
 
     /**
@@ -52,7 +62,7 @@ public class PhotoFeed {
     @NonNull
     public Completable refresh() {
         return photoRepository.loadLatestPhotos(filter.tags())
-                              .doOnSuccess(photosSubject::onNext)
+                              .doOnSuccess(photos -> photosSubject.onNext(photos))
                               .toCompletable();
     }
 
@@ -66,6 +76,21 @@ public class PhotoFeed {
     public Completable filter(@NonNull Filter newFilter) {
         filter = newFilter;
         return refresh();
+    }
+
+    /**
+     * Observes a given filter and refreshes automatically given the filter changes.
+     *
+     * @param observableFilter the filter to observe.
+     */
+    public void observe(@Nullable Observable<Filter> observableFilter) {
+        if (observedFilterDisposable != null) {
+            observedFilterDisposable.dispose();
+        }
+
+        if (observableFilter != null) {
+            observedFilterDisposable = observableFilter.subscribe(filter -> filter(filter).subscribe());
+        }
     }
 
     /**

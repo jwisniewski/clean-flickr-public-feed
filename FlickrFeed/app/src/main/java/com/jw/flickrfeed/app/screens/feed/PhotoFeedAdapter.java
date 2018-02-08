@@ -36,7 +36,8 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         void onPhotoDetailsRequested(@NonNull Photo photo);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    @SuppressWarnings("Convert2MethodRef")
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemContent)
         ViewGroup itemContent;
@@ -53,27 +54,56 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         @BindView(R.id.tagsIndicatorImageView)
         ImageView tagsIndicatorImageView;
 
+        @Nullable
+        Photo boundPhoto;
+
         @NonNull
-        public static ViewHolder create(@NonNull ViewGroup parent) {
+        static ViewHolder create(@NonNull ViewGroup parent) {
             return new ViewHolder(LayoutInflater.from(parent.getContext())
                                                 .inflate(R.layout.photo_feed_item, parent, false));
         }
 
-        private ViewHolder(@NonNull View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
 
             ButterKnife.bind(this, view);
         }
 
-        public void bind(@NonNull Photo photo, @Nullable PhotoIntegrationListener listener) {
+        void bind(@NonNull Photo newPhoto, @Nullable PhotoIntegrationListener listener) {
+            boundPhoto = newPhoto;
+
+            bindInitialState();
+            loadPhoto(boundPhoto, (loadedPhoto, swatch) -> {
+                if (loadedPhoto == boundPhoto) {
+                    bindPhotoLoadedState(loadedPhoto, swatch);
+                }
+            });
+
+            itemContent.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onPhotoSelected(boundPhoto);
+                }
+            });
+
+            itemContent.setOnLongClickListener(view -> {
+                if (listener != null) {
+                    listener.onPhotoDetailsRequested(boundPhoto);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        private void bindInitialState() {
             photoDetailsLayout.setVisibility(View.GONE);
             authorTextView.setVisibility(View.GONE);
             tagsIndicatorImageView.setVisibility(View.GONE);
+        }
 
+        private void loadPhoto(@NonNull Photo photo, LoadedPhotoConsumer consumer) {
             Picasso.with(photoImageView.getContext())
                    .load(photo.thumbnailUrl())
-                   .fit()
-                   .centerCrop()
                    .into(photoImageView, new Callback() {
                        @Override
                        public void onSuccess() {
@@ -81,18 +111,7 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
                                   .generate(palette -> {
                                       final Palette.Swatch swatch = palette.getMutedSwatch();
                                       if (swatch != null) {
-                                          photoDetailsLayout.setVisibility(View.VISIBLE);
-                                          photoDetailsLayout.setBackgroundTintList(valueOf(swatch.getRgb()));
-
-                                          authorTextView.setVisibility(View.VISIBLE);
-                                          authorTextView.setTextColor(swatch.getBodyTextColor());
-                                          authorTextView.setText(photo.author());
-
-                                          if (!photo.tags().isEmpty()) {
-                                              tagsIndicatorImageView.setVisibility(View.VISIBLE);
-                                              tagsIndicatorImageView.setImageTintList(
-                                                      valueOf(swatch.getBodyTextColor()));
-                                          }
+                                          consumer.consume(photo, swatch);
                                       }
                                   });
                        }
@@ -102,21 +121,21 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
                            // in production ready app we should definitely handle this
                        }
                    });
+        }
 
-            itemContent.setOnClickListener(view -> {
-                if (listener != null) {
-                    listener.onPhotoSelected(photo);
-                }
-            });
+        private void bindPhotoLoadedState(@NonNull Photo photo, @NonNull Palette.Swatch swatch) {
+            photoDetailsLayout.setVisibility(View.VISIBLE);
+            photoDetailsLayout.setBackgroundTintList(valueOf(swatch.getRgb()));
 
-            itemContent.setOnLongClickListener(view -> {
-                if (listener != null) {
-                    listener.onPhotoDetailsRequested(photo);
-                    return true;
-                } else {
-                    return false;
-                }
-            });
+            authorTextView.setVisibility(View.VISIBLE);
+            authorTextView.setTextColor(swatch.getBodyTextColor());
+            authorTextView.setText(photo.author());
+
+            if (!photo.tags().isEmpty()) {
+                tagsIndicatorImageView.setVisibility(View.VISIBLE);
+                tagsIndicatorImageView.setImageTintList(
+                        valueOf(swatch.getBodyTextColor()));
+            }
         }
     }
 
@@ -150,8 +169,13 @@ public class PhotoFeedAdapter extends RecyclerView.Adapter<PhotoFeedAdapter.View
         return photos.size();
     }
 
-    public void setPhotoIntegrationListener(@Nullable PhotoIntegrationListener photoIntegrationListener) {
+    public void setPhotoInteractionListener(@Nullable PhotoIntegrationListener photoIntegrationListener) {
         this.photoIntegrationListener = photoIntegrationListener;
         notifyDataSetChanged();
+    }
+
+    interface LoadedPhotoConsumer {
+
+        void consume(@NonNull Photo loadedPhoto, @NonNull Palette.Swatch swatch);
     }
 }

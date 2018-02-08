@@ -16,15 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:contentDescription="@string/photo_description"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:id="@+id/photoDetailsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:background="@color/colorStrongOverlay">
+        android:background="@color/colorStrongOverlay"
+        android:gravity="bottom">
 
         <TextView
             android:id="@+id/authorTextView"

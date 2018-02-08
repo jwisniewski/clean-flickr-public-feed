@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import com.jw.base.ui.activities.AppFragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import com.jw.flickrfeed.BuildConfig;
+import com.jw.flickrfeed.R;
 import com.jw.flickrfeed.app.screens.favorites.FavoritesDialogFragment;
 import com.jw.flickrfeed.app.screens.favorites.FavoritesScope;
 import com.jw.flickrfeed.app.screens.feed.PhotoFeedFragment;
@@ -23,13 +24,19 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- * Main activity, an entry point of the app, inviting a user with a fresh list of photos downloaded from Flickr.
+ * Main activity, an entry point of the app, invites a user with a fresh list of photos downloaded from Flickr.
+ * <p>
+ * In this simple, one activity project, the main activity has been used to assemble our 'domain' objects
+ * and provide mechanisms to inject them into fragments (via {@link FavoritesScope} and {@link PhotoFeedScope}).
  *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
 @Accessors(fluent = true)
-public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeedScope, FavoritesScope {
+public class FlickrFeedActivity extends AppCompatActivity implements PhotoFeedScope, FavoritesScope {
 
+    /**
+     * Flickr API endpoint to use by the {@link FlickrApi}.
+     */
     private static final String FLICKR_API_BASE_URL = "https://api.flickr.com";
 
     @Getter
@@ -69,22 +76,44 @@ public class FlickrFeedActivity extends AppFragmentActivity implements PhotoFeed
         }
     };
 
-    @Nullable
     @Override
-    public Fragment createStartupFragment(@NonNull Intent intent) {
-        return PhotoFeedFragment.newInstance();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.fragment_container);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                                       .add(R.id.fragmentContainer, PhotoFeedFragment.newInstance())
+                                       .commit();
+        }
+
+        createDomain();
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onDestroy() {
+        super.onDestroy();
 
-        // TODO simplify AppFragmentActivity
+        destroyDomain();
+    }
+
+    /**
+     * Assembles our domain objects, a Flickr photos repository, photo feed service and the 'smart' filter
+     * collecting user choices in order to build the favorite list of tags.
+     */
+    private void createDomain() {
         final FlickrApi flickrApi = new FlickrApiFactory().verbose(BuildConfig.DEBUG).create(FLICKR_API_BASE_URL);
         final FlickrPhotoRepository flickrPhotoRepository = new FlickrPhotoRepository(flickrApi);
 
-        photoFeed = new PhotoFeed(flickrPhotoRepository);
         filterProfile = new FilterProfile();
 
-        super.onCreate(savedInstanceState);
+        photoFeed = new PhotoFeed(flickrPhotoRepository);
+        photoFeed.observe(filterProfile.observableFilter());
+    }
+
+    private void destroyDomain() {
+        photoFeed.destroy();
+        filterProfile.destroy();
     }
 }

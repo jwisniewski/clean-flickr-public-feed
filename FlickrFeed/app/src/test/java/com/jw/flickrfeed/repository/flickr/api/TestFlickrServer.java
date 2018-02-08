@@ -5,8 +5,11 @@ import fi.iki.elonen.NanoHTTPD;
 import java.io.IOException;
 
 /**
+ * Simple HTTP server simulating communication with the Flickr API.
+ *
  * @author Jaroslaw Wisniewski, j.wisniewski@appsisle.com
  */
+@SuppressWarnings("WeakerAccess")
 public class TestFlickrServer extends NanoHTTPD {
 
     public static final int PORT = 9876;
@@ -29,7 +32,8 @@ public class TestFlickrServer extends NanoHTTPD {
         try {
             if (session.getMethod() == Method.GET &&
                     session.getUri().equals("/services/feeds/photos_public.gne") &&
-                    session.getQueryParameterString().equals("format=json&nojsoncallback=1")) {
+                    session.getQueryParameterString().contains("format=json") &&
+                    session.getQueryParameterString().contains("nojsoncallback=1")) {
                 return servePublicPhotosFeed();
             }
 
