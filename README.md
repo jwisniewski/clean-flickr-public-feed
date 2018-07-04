@@ -8,9 +8,9 @@ Click on images you like to feed more similarities based on tags.
 
 ## The architecture
 
-I decided to write enough code to show a simple yet clean and testable architecture, more or less following the [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) principles as defined by Robert C. Martin (Uncle Bob).
+I decided to write enough code to show a simple yet clean and testable architecture. I'm rather a fan of the [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) principles defined by Robert C. Martin (Uncle Bob). The influence can be noticed in my code (I hope;)).
 
-I didn't include any of trendy *frameworks* implementing the *clean architecture*. In my opinion, when Uncle Bob introduced this approach, he wanted to show us how to keep frameworks away from our domain logic. He wanted to show the architecture is not about frameworks, that frameworks should be kept aside. Then what people did? They created clean architecture frameworks;)
+I didn't use any of trendy *frameworks* implementing the *clean architecture* however. In my opinion, when Uncle Bob introduced this approach, he wanted to show us how to keep frameworks away from our domain logic. He wanted to show the architecture is not about frameworks, that frameworks should be kept aside. Then what people did? They created clean architecture frameworks;)
 
 The project has been divided into:
 
