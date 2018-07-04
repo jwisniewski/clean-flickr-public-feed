@@ -2,7 +2,9 @@
 
 ## The use case
 
-A short experiment, an app for Android which displays a grid of recent images from the [flickr public feed](https://www.flickr.com/services/feeds/docs/photos_public).
+A short experiment, an app for Android which displays a grid of recent photos from the [flickr public feed](https://www.flickr.com/services/feeds/docs/photos_public).
+
+Click on images you like to feed more similarities based on tags.
 
 ## The architecture
 
@@ -30,3 +32,9 @@ This layer wasn't testable either, according to my design, so I didn't lose anyt
 ## A few words about unit tests
 I used plain junit4, skipped android instrumentation tests, the time I had for the project
 didn't allow me to test everything but I managed to show a few tests per layer.
+
+## The screenshots
+
+![flickrfeed_screenshot_1](https://user-images.githubusercontent.com/3899440/42290726-7658259e-7fc7-11e8-8404-e1b2908d2511.jpg)
+
+![flickrfeed_screenshot_2](https://user-images.githubusercontent.com/3899440/42290741-82724184-7fc7-11e8-9b07-f8d139816c0b.jpg)
