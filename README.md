@@ -1,4 +1,4 @@
-# Flickr Public Feed
+# Clean Flickr Public Feed
 
 ## The use case
 
